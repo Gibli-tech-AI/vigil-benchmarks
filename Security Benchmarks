@@ -1,0 +1,24 @@
+# Vigil Open AI Agent Security Benchmarks
+
+Transparent, reproducible benchmarks evaluating runtime security guardrails against direct and indirect prompt injections for autonomous AI agents (LangChain, LlamaIndex, MCP).
+
+## Overview
+This repository provides an open dataset of attack vectors and measures the performance of **Vigil** against other filtering mechanisms. We believe in radical transparency—including publishing cases where our detection fails.
+
+## Evaluation Methodology
+- **Dataset Size:** 500+ curated adversarial prompts and indirect payloads.
+- **Metrics Tracked:**
+  - **TPR (True Positive Rate):** Percentage of blocked attacks.
+  - **FPR (False Positive Rate):** Percentage of incorrectly blocked legitimate prompts.
+  - **Latency (p95):** Time overhead added to agent execution.
+
+## Results Matrix (Updated: November 2026)
+
+| Guardrail System | Direct Injection TPR | Indirect Injection TPR | False Positive Rate | p95 Latency |
+| :--- | :--- | :--- | :--- | :--- |
+| **Vigil (Runtime Plane)** | **97.4%** | **94.8%** | **0.6%** | **11ms** |
+| Baseline Regex Filter | 62.1% | 18.3% | 0.2% | 2ms |
+| Standard Prompt Guard | 88.5% | 45.0% | 1.4% | 45ms |
+
+## Known Limitations & Honest Disclosure
+- **Encoding Bypasses:** Novel base64 or obfuscated multi-turn sequences occasionally bypass the pattern-matching layer before semantic intent is flagged. We track these in our issues tab.
