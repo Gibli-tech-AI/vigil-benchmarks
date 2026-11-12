@@ -1,24 +1,39 @@
 # Vigil Open AI Agent Security Benchmarks
 
-Transparent, reproducible benchmarks evaluating runtime security guardrails against direct and indirect prompt injections for autonomous AI agents (LangChain, LlamaIndex, MCP).
+This document is a status and methodology register, not a certification and not a claim of universal protection.
 
-## Overview
-This repository provides an open dataset of attack vectors and measures the performance of **Vigil** against other filtering mechanisms. We believe in radical transparency—including publishing cases where our detection fails.
+## Current result status
 
-## Evaluation Methodology
-- **Dataset Size:** 500+ curated adversarial prompts and indirect payloads.
-- **Metrics Tracked:**
-  - **TPR (True Positive Rate):** Percentage of blocked attacks.
-  - **FPR (False Positive Rate):** Percentage of incorrectly blocked legitimate prompts.
-  - **Latency (p95):** Time overhead added to agent execution.
+**No numerical result is currently independently reproducible from the files in this repository.**
 
-## Results Matrix (Updated: November 2026)
+The prior result matrix showing 97.4% direct-injection TPR, 94.8% indirect-injection TPR, 0.6% FPR, and 11ms p95 latency is withdrawn from current marketing use pending publication of the dataset, scripts, pinned environment, detector commit, and raw results. The earlier statement that this repository contained 500+ curated cases is also unverified against the current repository tree.
 
-| Guardrail System | Direct Injection TPR | Indirect Injection TPR | False Positive Rate | p95 Latency |
-| :--- | :--- | :--- | :--- | :--- |
-| **Vigil (Runtime Plane)** | **97.4%** | **94.8%** | **0.6%** | **11ms** |
-| Baseline Regex Filter | 62.1% | 18.3% | 0.2% | 2ms |
-| Standard Prompt Guard | 88.5% | 45.0% | 1.4% | 45ms |
+A separate internal audit report describes 47.0% attack detection at 1.0% FPR for a hybrid PromptShield evaluation and 22.4% at 0.22% FPR for deterministic mode. Those figures have not been reproduced from this repository and must not be represented as repository-verified results.
 
-## Known Limitations & Honest Disclosure
-- **Encoding Bypasses:** Novel base64 or obfuscated multi-turn sequences occasionally bypass the pattern-matching layer before semantic intent is flagged. We track these in our issues tab.
+See docs/REPRODUCIBILITY-STATUS.md before using any performance number externally.
+
+## Benchmark scope
+
+The intended evaluation covers:
+- Direct and indirect prompt injection.
+- Text, encoding, Unicode, markup, document and supported multimodal obfuscation.
+- Multilingual, cross-script, transliterated and code-switched content.
+- RAG/memory poisoning and multi-turn propagation.
+- Tool/MCP poisoning, schema drift, shadowing, rug pulls and unsafe arguments.
+- Data exfiltration, privilege escalation, and resource/cost abuse.
+
+See docs/ATTACK-TAXONOMY.md and docs/GLOBAL-LANGUAGE-SECURITY.md.
+
+## Required metrics
+
+- TPR/recall, precision, FPR, FNR.
+- Per-language and per-attack-family confusion matrices.
+- p50/p95/p99 latency, split by deterministic, classifier-assisted and end-to-end path.
+- Confidence intervals, sample counts, dataset hash, detector commit, model/provider version, hardware and run configuration.
+
+## Known limitations
+
+- Text-only scanning cannot establish that image/audio/video or hidden document layers are safe unless the corresponding OCR/ASR/document parser is actually integrated and tested.
+- Encoding and obfuscation detection is bounded by supported decoders and resource limits.
+- Pattern matching is a detection layer, not an authorization boundary.
+- Runtime protection must also enforce least privilege, tool argument policy, human approval for consequential actions, output validation, and egress controls.
