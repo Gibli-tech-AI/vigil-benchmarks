@@ -1,0 +1,28 @@
+name: Validate benchmark artifacts
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pinned schema validator
+        run: python -m pip install --disable-pip-version-check jsonschema==4.23.0
+      - name: Validate JSON schemas
+        run: |
+          python -m json.tool schemas/attack-case.schema.json > /dev/null
+          python -m json.tool schemas/language-manifest.schema.json > /dev/null
+      - name: Validate contributed cases
+        run: python scripts/validate_cases.py
