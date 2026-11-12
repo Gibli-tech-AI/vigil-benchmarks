@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Vigil Benchmark Case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id","case_type","delivery_channel","attack_family","expected_outcome","source_trust","content","metadata"],
+  "properties": {
+    "id": {"type":"string","pattern":"^[A-Z0-9][A-Z0-9._-]{2,127}$"},
+    "case_type": {"enum":["attack","benign_control","boundary_case"]},
+    "delivery_channel": {"enum":["direct_user","retrieved_document","web_page","email","code_or_repository","tool_output","mcp_tool_definition","mcp_schema","agent_message","memory","image_ocr","audio_asr","video_frame","office_document","pdf","other"]},
+    "attack_family": {"enum":["direct_override","indirect_injection","role_impersonation","prompt_extraction","encoding_obfuscation","unicode_obfuscation","typoglycemia_or_spelling","multilingual_or_code_switch","markup_or_hidden_content","multimodal_injection","rag_or_memory_poisoning","multi_turn_or_delayed","tool_poisoning","schema_poisoning","tool_shadowing_or_rug_pull","tool_argument_abuse","data_exfiltration","privilege_escalation","resource_exhaustion","benign","other"]},
+    "obfuscations": {"type":"array","items":{"type":"string","maxLength":80},"uniqueItems":true,"default":[]},
+    "languages": {"type":"array","items":{"type":"string","pattern":"^[A-Za-z0-9-]{2,35}$"},"uniqueItems":true,"default":[]},
+    "scripts": {"type":"array","items":{"type":"string","maxLength":40},"uniqueItems":true,"default":[]},
+    "expected_outcome": {"enum":["block","allow","escalate","require_approval","unsupported"]},
+    "source_trust": {"enum":["trusted","untrusted","mixed","unknown"]},
+    "content": {"type":"object","required":["format","text"],"properties":{"format":{"enum":["text","json","html","markdown","xml","yaml","code","transcript","metadata"]},"text":{"type":"string","maxLength":20000}},"additionalProperties":false},
+    "sequence": {"type":"array","items":{"type":"object","required":["step","content"],"properties":{"step":{"type":"integer","minimum":1},"channel":{"type":"string"},"content":{"type":"string","maxLength":20000}},"additionalProperties":false},"default":[]},
+    "metadata": {"type":"object","required":["purpose","provenance"],"properties":{"purpose":{"type":"string","maxLength":500},"provenance":{"type":"string","maxLength":1000},"license":{"type":"string","maxLength":200},"reviewed_by":{"type":"string","maxLength":200},"review_date":{"type":"string","format":"date"},"notes":{"type":"string","maxLength":2000}},"additionalProperties":false}
+  }
+}
